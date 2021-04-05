@@ -1,16 +1,16 @@
-// Server API makes it possible to hook into various parts of Gridsome
-// on server-side and add custom data to the GraphQL data layer.
-// Learn more: https://gridsome.org/docs/server-api/
+const axios = require("axios");
+const __API_PATH__ =
+  "https://yf2b41ezjb.execute-api.ap-southeast-1.amazonaws.com/dev/catalog/product/?categoryId=MC01-eoytjqfdsmfkmq9p0lk";
 
-// Changes here require a server restart.
-// To restart press CTRL + C in terminal and run `gridsome develop`
-
-module.exports = function (api) {
-  api.loadSource(({ addCollection }) => {
+module.exports = function(api) {
+  api.loadSource(async ({ addCollection }) => {
     // Use the Data Store API here: https://gridsome.org/docs/data-store-api/
-  })
+    const {
+      data: { data },
+    } = await axios.get(__API_PATH__);
 
-  api.createPages(({ createPage }) => {
-    // Use the Pages API here: https://gridsome.org/docs/pages-api/
-  })
-}
+    const collection = addCollection("ProductList");
+
+    data.forEach((item) => collection.addNode(item));
+  });
+};

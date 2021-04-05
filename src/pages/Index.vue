@@ -10,17 +10,37 @@
     />
     <h1 class="text-green-400 text-3xl">{{ message }}</h1>
     <CardProduct
-      v-for="product in dataFromAPI"
-      :key="product.createdAt"
-      v-bind:product-name="product.productName"
-      v-bind:description="product.productShortDescription"
-      v-bind:image-url="product.productImagesUrl[0].url"
+      v-for="p in $page.allProductList.edges"
+      :key="p.node.createdAt"
+      v-bind:product-name="p.node.productName"
+      v-bind:description="p.node.productShortDescription"
+      v-bind:image-url="p.node.productImagesUrl[0].url"
     />
   </Layout>
 </template>
 
+<page-query>
+query {
+  allProductList{
+    edges {
+      node {
+        id
+        createdAt
+        productName
+        productShortDescription
+        productImagesUrl {
+          title
+          caption
+          url
+        }
+      }
+    }
+  }
+}
+</page-query>
+
 <script>
-import axios from "axios";
+// import axios from "axios";
 import CardProduct from "../components/CardProduct";
 
 export default {
@@ -44,19 +64,19 @@ export default {
     CardProduct,
   },
   methods: {
-    fetchProduct: async () => {
-      try {
-        const __API_PATH__ =
-          "https://yf2b41ezjb.execute-api.ap-southeast-1.amazonaws.com/dev/catalog/product/?categoryId=MC01-eoytjqfdsmfkmq9p0lk";
-        const api = await axios.get(__API_PATH__);
-        return api.data.data;
-      } catch (error) {
-        console.error("__ERROR__ : ", error);
-      }
-    },
+    // fetchProduct: async () => {
+    //   try {
+    //     const __API_PATH__ =
+    //       "https://yf2b41ezjb.execute-api.ap-southeast-1.amazonaws.com/dev/catalog/product/?categoryId=MC01-eoytjqfdsmfkmq9p0lk";
+    //     const api = await axios.get(__API_PATH__);
+    //     return api.data.data;
+    //   } catch (error) {
+    //     console.error("__ERROR__ : ", error);
+    //   }
+    // },
   },
   mounted() {
-    this.fetchProduct().then((products) => (this.dataFromAPI = products));
+    // this.fetchProduct().then((products) => (this.dataFromAPI = products));
   },
 };
 </script>
